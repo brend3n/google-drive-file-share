@@ -21,8 +21,6 @@ SCOPES = ['https://www.googleapis.com/auth/drive.metadata.readonly']
 
 class DriveShare():
 
-
-
     # Initialize connection to google drive account
     # ! Need to figure out what else to add
     def __init__(self):
@@ -48,7 +46,7 @@ class DriveShare():
     def test(self):
          # Call the Drive v3 API
         results = self.service.files().list(
-                pageSize=10, fields="nextPageToken, files(id, name)").execute()
+                pageSize=25, fields="nextPageToken, files(id, name)").execute()
         items = results.get('files', [])
 
         if not items:
@@ -61,8 +59,17 @@ class DriveShare():
 
 
     # Adds a new folder to the drive
-    def create_folder(self):
-        pass
+    def create_folder(self, folder_name):
+        
+        file_metadata = {
+            'name': str(folder_name),
+            'mimeType':'application/vnd.google-apps.folder'
+        }
+
+        file = self.service.files().create(body=file_metadata,fields='id').execute()
+        print(f"Folder ID: {file.get('id')}")
+
+        return
 
     # Removes a folder from the drive
     def delete_folder(self):
@@ -80,8 +87,8 @@ class DriveShare():
 
 
 drive = DriveShare()
-drive.test()
-#drive.create_folder()
+#drive.test()
+drive.create_folder("brenden_test_brenden_test")
 #drive.share_folder()
 #drive.insert_to_folder()
 #drive.delete_folder()
