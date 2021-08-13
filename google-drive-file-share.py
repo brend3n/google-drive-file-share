@@ -11,6 +11,7 @@ Be able to:
     4) Remove folders
 '''
 #from __future__ import print_function
+from os import EX_TEMPFAIL
 import os.path
 from googleapiclient.discovery import build
 from google_auth_oauthlib.flow import InstalledAppFlow
@@ -128,7 +129,10 @@ class DriveShare():
 import time
 drive = DriveShare()
 #drive.test()
-folder_id = drive.create_folder("brenden_test_brenden_test")
+
+email = "brendenCECS@gmail.com"
+
+folder_id = drive.create_folder(email=email)
 file_id = drive.insert_to_folder("Introduction_to_Electic_Circuits.pdf",folder_id, "pdf")
 
 
@@ -136,7 +140,7 @@ file_id = drive.insert_to_folder("Introduction_to_Electic_Circuits.pdf",folder_i
 # time.sleep(10)
 # folder_id2 = drive.delete_folder(folder_id)
 
-res = drive.share_folder(folder_id, "brendenCECS@gmail.com")
+res = drive.share_folder(folder_id, email)
 
 
 
