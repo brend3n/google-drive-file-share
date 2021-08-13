@@ -83,6 +83,7 @@ class DriveShare():
         pass
 
     # Adds files to a folder
+    # ! Seems to create another folder as the same name of the parent folder and places the file into it
     def insert_to_folder(self, file_name, folder_id, file_type):
 
         file_metadata = {
