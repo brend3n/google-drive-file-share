@@ -6,3 +6,6 @@ credentials2.json
 quickstart.py
 
 .gitignore
+
+*.pdf
+*.zip
