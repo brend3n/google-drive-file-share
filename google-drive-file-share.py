@@ -75,8 +75,9 @@ class DriveShare():
         return folder_id
 
     # Removes a folder from the drive
-    def delete_folder(self):
-        pass
+    def delete_folder(self, folder_id):
+        folder = self.service.files().delete(fileId=folder_id).execute()
+        return folder
 
     # Shares the folder with a list of users
     def share_folder(self):
@@ -100,10 +101,16 @@ class DriveShare():
 
         return file_id
 
+
+import time
 drive = DriveShare()
 #drive.test()
 folder_id = drive.create_folder("brenden_test_brenden_test")
-file_id = drive.insert_to_folder("Introduction_to_Electic_Circuits.pdf",folder_id, "pdf")
+#file_id = drive.insert_to_folder("Introduction_to_Electic_Circuits.pdf",folder_id, "pdf")
+print(f"Deleting folder in 10 seconds")
+time.sleep(10)
+folder_id2 = drive.delete_folder(folder_id)
+
 #drive.share_folder()
 #drive.insert_to_folder()
 #drive.delete_folder()
