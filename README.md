@@ -5,7 +5,7 @@
 #### API for creating, removing, sharing and adding files to folders in google drive.
 
 
-#### Use this website links below to follow along to initialize your drive:
+#### Use this website links below to follow along to initialize your drive and credentials:
 
 	1. https://developers.google.com/drive/api/v3/quickstart/python
 	2. https://developers.google.com/workspace/guides/create-project
