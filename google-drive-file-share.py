@@ -16,6 +16,7 @@ from googleapiclient.discovery import build
 from google_auth_oauthlib.flow import InstalledAppFlow
 from google.auth.transport.requests import Request
 from google.oauth2.credentials import Credentials
+from googleapiclient.http import MediaFileUpload
 
 SCOPES = ['https://www.googleapis.com/auth/drive']
 
@@ -59,6 +60,7 @@ class DriveShare():
 
 
     # Adds a new folder to the drive
+    # Returns the folder id
     def create_folder(self, folder_name):
         
         file_metadata = {
@@ -66,10 +68,11 @@ class DriveShare():
             'mimeType':'application/vnd.google-apps.folder'
         }
 
-        file = self.service.files().create(body=file_metadata,fields='id').execute()
-        print(f"Folder ID: {file.get('id')}")
+        folder = self.service.files().create(body=file_metadata,fields='id').execute()
+        folder_id = folder.get('id')
+        print(f"Folder ID: {folder_id}")
 
-        return
+        return folder_id
 
     # Removes a folder from the drive
     def delete_folder(self):
@@ -80,15 +83,26 @@ class DriveShare():
         pass
 
     # Adds files to a folder
-    def insert_to_folder(self):
-        pass
+    def insert_to_folder(self, file_name, folder_id, file_type):
 
+        file_metadata = {
+            'name': file_name,
+            'parents': [folder_id]
+        }
 
+        media = MediaFileUpload(file_name,mimetype=f'application/{file_type}',resumable=True)
 
+        file = self.service.files().create(body=file_metadata,media_body=media,fields='id').execute()
+
+        file_id = file.get('id')
+        print(f'File ID: {file_id}')
+
+        return file_id
 
 drive = DriveShare()
 #drive.test()
-drive.create_folder("brenden_test_brenden_test")
+folder_id = drive.create_folder("brenden_test_brenden_test")
+file_id = drive.insert_to_folder("Introduction_to_Electic_Circuits.pdf",folder_id, "pdf")
 #drive.share_folder()
 #drive.insert_to_folder()
 #drive.delete_folder()
