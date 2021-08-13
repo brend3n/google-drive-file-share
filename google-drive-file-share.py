@@ -143,10 +143,6 @@ class DriveShare():
         return file_id
 
 
-
-
-
-import time
 drive = DriveShare()
 # drive.test()
 
