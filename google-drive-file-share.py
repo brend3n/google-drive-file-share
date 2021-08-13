@@ -43,12 +43,13 @@ class DriveShare():
                 token.write(creds.to_json())
 
         self.service = build('drive', 'v3', credentials=creds)
+        self.textbook_server_id = self.find_folder_id("TextbookServer")
 
         
     def test(self):
          # Call the Drive v3 API
         results = self.service.files().list(
-                pageSize=25, fields="nextPageToken, files(id, name)").execute()
+                pageSize=1000, fields="nextPageToken, files(id, name)").execute()
         items = results.get('files', [])
 
         if not items:
@@ -60,9 +61,26 @@ class DriveShare():
 
 
     # Find the folder_id from the name of a folders
-    def find_folder_id(self, folder_name):
+    # Returns the folder id or false if not found
+    def find_folder_id(self, email):
+        
         folder_id = None
-        return folder_id
+        results = self.service.files().list(
+                pageSize=1000, fields="nextPageToken, files(id, name)").execute()
+        items = results.get('files', [])
+
+        if not items:
+            print('No files found.')
+            return False
+        else:
+            # print('Files:')
+            for item in items:
+                if item['name'] == self.name_folder(email):
+                    print(f"Found folder {item['name']} {item['id']}")
+                    return item['id']
+                # print(u'{0} ({1})'.format(item['name'], item['id']))
+
+        return False
 
     # Constructs the name of the folder
     def name_folder(self, email):
@@ -72,11 +90,13 @@ class DriveShare():
     # Returns the folder id
     def create_folder(self, email):
         
+        
         folder_name = self.name_folder(email)
 
         file_metadata = {
             'name': folder_name,
-            'mimeType':'application/vnd.google-apps.folder'
+            'mimeType':'application/vnd.google-apps.folder',
+            'parents': [self.textbook_server_id]
         }
 
         folder = self.service.files().create(body=file_metadata,fields='id').execute()
@@ -128,19 +148,23 @@ class DriveShare():
 
 import time
 drive = DriveShare()
-#drive.test()
+# drive.test()
 
 email = "brendenCECS@gmail.com"
 
 folder_id = drive.create_folder(email=email)
+# folder_id = drive.find_folder_id(email)
+file_id = drive.insert_to_folder("java.pdf",folder_id, "pdf")
 file_id = drive.insert_to_folder("Introduction_to_Electic_Circuits.pdf",folder_id, "pdf")
 
 
-# print(f"Deleting folder in 10 seconds")
-# time.sleep(10)
+# # print(f"Deleting folder in 10 seconds")
+# # time.sleep(10)
+
+
 # folder_id2 = drive.delete_folder(folder_id)
 
-res = drive.share_folder(folder_id, email)
+# res = drive.share_folder(folder_id, email)
 
 
 
