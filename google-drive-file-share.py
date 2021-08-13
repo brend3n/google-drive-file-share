@@ -21,7 +21,7 @@ from googleapiclient.http import MediaFileUpload
 SCOPES = ['https://www.googleapis.com/auth/drive']
 
 class DriveShare():
-
+    
     # Initialize connection to google drive account
     # ! Need to figure out what else to add
     def __init__(self):
@@ -58,18 +58,29 @@ class DriveShare():
                 print(u'{0} ({1})'.format(item['name'], item['id']))
 
 
+    # Find the folder_id from the name of a folders
+    def find_folder_id(self, folder_name):
+        folder_id = None
+        return folder_id
+
+    # Constructs the name of the folder
+    def name_folder(self, email):
+        return f"{email}_files"
 
     # Adds a new folder to the drive
     # Returns the folder id
-    def create_folder(self, folder_name):
+    def create_folder(self, email):
         
+        folder_name = self.name_folder(email)
+
         file_metadata = {
-            'name': str(folder_name),
+            'name': folder_name,
             'mimeType':'application/vnd.google-apps.folder'
         }
 
         folder = self.service.files().create(body=file_metadata,fields='id').execute()
         folder_id = folder.get('id')
+
         print(f"Folder ID: {folder_id}")
 
         return folder_id
@@ -80,13 +91,22 @@ class DriveShare():
         return folder
 
     # Shares the folder with a list of users
-    def share_folder(self):
-        pass
+    def share_folder(self, folder_id, email):
+
+        body={
+            "role": "reader",
+            "type": "user",
+            "emailAddress":email
+        }
+
+        res = self.service.permissions().create(body=body, fileId=folder_id).execute()
+
+        return res
 
     # Adds files to a folder
     # ! Seems to create another folder as the same name of the parent folder and places the file into it
     def insert_to_folder(self, file_name, folder_id, file_type):
-
+    
         file_metadata = {
             'name': file_name,
             'parents': [folder_id]
@@ -102,14 +122,24 @@ class DriveShare():
         return file_id
 
 
+
+
+
 import time
 drive = DriveShare()
 #drive.test()
 folder_id = drive.create_folder("brenden_test_brenden_test")
-#file_id = drive.insert_to_folder("Introduction_to_Electic_Circuits.pdf",folder_id, "pdf")
-print(f"Deleting folder in 10 seconds")
-time.sleep(10)
-folder_id2 = drive.delete_folder(folder_id)
+file_id = drive.insert_to_folder("Introduction_to_Electic_Circuits.pdf",folder_id, "pdf")
+
+
+# print(f"Deleting folder in 10 seconds")
+# time.sleep(10)
+# folder_id2 = drive.delete_folder(folder_id)
+
+res = drive.share_folder(folder_id, "brendenCECS@gmail.com")
+
+
+
 
 #drive.share_folder()
 #drive.insert_to_folder()
