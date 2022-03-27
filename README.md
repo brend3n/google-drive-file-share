@@ -20,7 +20,7 @@
 
 #### Example of use:
 ```python
-enter code heredrive = DriveShare()
+drive = DriveShare()
 email = "myemail@gmail.com"
 folder_id = drive.create_folder(email=email)
 folder_id = drive.insert_to_folder("File.pdf", folderid,"pdf")
