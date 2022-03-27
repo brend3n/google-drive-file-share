@@ -1,3 +1,4 @@
+
 ### google-drive-file-share
 
   
@@ -18,10 +19,9 @@
 	4. Share folder
 
 #### Example of use:
-
-`python3 drive = DriveShare()
+```python
+enter code heredrive = DriveShare()
 email = "myemail@gmail.com"
 folder_id = drive.create_folder(email=email)
 folder_id = drive.insert_to_folder("File.pdf", folderid,"pdf")
-`
-
+```
